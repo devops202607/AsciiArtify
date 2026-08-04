@@ -1,4 +1,4 @@
-# ArgoCD on k3d (via Traefik)
+# POC — ArgoCD on k3d (via Traefik)
 
 Install:
 
@@ -11,7 +11,7 @@ kubectl apply -n argocd --server-side --force-conflicts \
 Expose over HTTP (no TLS at the Traefik edge) and restart the server:
 
 ```bash
-kubectl apply -f cmd-params-patch.yaml
+kubectl apply -f argocd/cmd-params-patch.yaml
 kubectl rollout restart deployment/argocd-server -n argocd
 ```
 
@@ -30,7 +30,7 @@ openssl req -x509 -nodes -newkey rsa:2048 -days 365 \
 kubectl create secret tls argocd-tls -n argocd \
   --cert=argocd-tls.crt --key=argocd-tls.key
 
-kubectl apply -f ingress.yaml
+kubectl apply -f argocd/ingress.yaml
 ```
 
 Get the admin password:
