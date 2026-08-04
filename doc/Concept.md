@@ -1,12 +1,12 @@
-# AsciiArtify - local K8s tooling for the PoC
+# AsciiArtify - local tooling for the PoC
 
 We picked a tool to run Kubernetes locally for the AsciiArtify PoC. Tried three: minikube, kind and k3d. Tested all of them on a Debian 13 box (2 vCPU, 3.7 GB RAM). All run the same YAML, so switching later is cheap.
 
 ## What these tools are
 
-- **minikube** - a real single-node cluster, runs in a VM or in a container. Has lots of addons (dashboard, ingress, metrics). Good for learning.
-- **kind** - Kubernetes IN Docker. Nodes are just Docker containers, built on kubeadm. Made for CI, very fast.
-- **k3d** - wraps k3s (Rancher's slim Kubernetes) into containers. Lightest, fastest to start, ships with ingress, a load balancer, storage and even a built-in local registry (`k3d registry create`).
+- minikube - a real single-node cluster, runs in a VM or in a container. Has lots of addons (dashboard, ingress, metrics). Good for learning.
+- kind - Kubernetes IN Docker. Nodes are just Docker containers, built on kubeadm. Made for CI, very fast.
+- k3d - wraps k3s (Rancher's slim Kubernetes) into containers. Lightest, fastest to start, ships with ingress, a load balancer, storage and even a built-in local registry (`k3d registry create`).
 
 ## Main differences
 
@@ -28,15 +28,15 @@ Measured on a Debian 13 box (2 vCPU, 3.7 GB RAM) from command start until nodes 
 
 ## Pros and cons
 
-**minikube**
+### minikube
 Pros: easiest for a beginner, best docs, tons of addons, several drivers.
 Cons: slow, eats RAM, multi-node is half-broken, needs --force to run as root.
 
-**kind**
+### kind
 Pros: fast, good for CI, true multi-node, no VM layer.
 Cons: no load balancer or ingress out of the box, you wire everything yourself, needs Docker.
 
-**k3d**
+### k3d
 Pros: fastest start, light, multi-node, ingress + LB + storage + local registry included, works with Docker and Podman, ports easy to expose.
 Cons: k3s is not 100% upstream Kubernetes (doesn't matter for a PoC), docs are thinner than minikube's.
 
@@ -105,13 +105,6 @@ $ curl http://hello.195.201.121.117.nip.io
 <h1>Hello from AsciiArtify</h1>
 ```
 
-Cluster management with k9s (terminal UI):
-
-```bash
-$ k9s
-# navigate pods / deployments / logs, all in the terminal
-```
-
 Files are in the repo under `demo/` (Dockerfile, index.html, deployment.yaml, ingress.yaml).
 
 ## Verdict
@@ -126,4 +119,4 @@ Keep **minikube** around only for learning and for cases where you need a real u
 
 ## Demostration
 
-![AsciiArtify demo](demo.gif)
+![demo](demo.gif)
