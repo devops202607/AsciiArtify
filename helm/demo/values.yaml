@@ -4,7 +4,7 @@ app:
   port: 80
 image:
   name: ghcr.io/devops202607/ascii-artify
-  tag: build-599e1af
+  tag: build-45a345f
 front:
   version: 3.0.1
   replicas: 1
