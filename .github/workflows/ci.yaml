@@ -1,0 +1,80 @@
+name: Continuous Integration
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'helm/**'
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    env:
+      DOCKER_BUILDKIT: "1"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run linter
+        run: make lint
+
+      - name: Run unit tests
+        run: make unit-test
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Declare SHA vars to use on other actions
+        id: vars
+        shell: bash
+        run: |
+          echo "GITHUB_SHA: ${GITHUB_SHA}"
+          echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Run build
+        run: make build
+
+      - name: Run push
+        run: make push
+
+  cd:
+    name: CD
+    needs: ci
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Declare SHA vars to use on other actions
+        id: vars
+        shell: bash
+        run: |
+          echo "GITHUB_SHA: ${GITHUB_SHA}"
+          echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Update current version
+        uses: mikefarah/yq@v4.44.3
+        with:
+          cmd: yq eval -i '.image.tag = "build-${{ steps.vars.outputs.sha_short }}"' helm/demo/values.yaml
+
+      - name: Setup git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add helm/demo/values.yaml
+          git commit -m "update code version to ${{ steps.vars.outputs.sha_short }} [skip ci]"
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push origin main

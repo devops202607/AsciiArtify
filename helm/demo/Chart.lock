@@ -1,0 +1,15 @@
+dependencies:
+- name: api-gateway
+  repository: file://charts/api-gateway
+  version: 0.1.0
+- name: db-nosql
+  repository: file://charts/db-nosql
+  version: 0.1.0
+- name: db-sql
+  repository: file://charts/db-sql
+  version: 0.1.0
+- name: nats
+  repository: https://nats-io.github.io/k8s/helm/charts/
+  version: 0.15.0
+digest: sha256:a87fc4e46008f34c28c188f6eded143fe85c5d3f5b6fc2944938090c3011b25c
+generated: "2026-08-05T01:41:09.083499025+03:00"

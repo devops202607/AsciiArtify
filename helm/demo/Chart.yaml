@@ -1,0 +1,19 @@
+apiVersion: v2
+appVersion: "1.0"
+description: A Helm chart for Kubernetes
+name: helm
+version: 0.1.0
+dependencies:
+  - name: api-gateway
+    version: 0.1.0
+    repository: file://charts/api-gateway
+  - name: db-nosql
+    version: 0.1.0
+    repository: file://charts/db-nosql
+  - name: db-sql
+    version: 0.1.0
+    repository: file://charts/db-sql
+  - name: nats
+    version: 0.15.0
+    repository: https://nats-io.github.io/k8s/helm/charts/
+    condition: nats.enable
