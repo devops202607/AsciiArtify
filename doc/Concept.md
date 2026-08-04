@@ -123,3 +123,7 @@ Use **Podman** as the container runtime so there is no Docker licensing risk.
 Keep **kind** in GitHub Actions for CI - it is the standard there.
 
 Keep **minikube** around only for learning and for cases where you need a real upstream single-node cluster.
+
+## Demostration
+
+![AsciiArtify demo](demo.gif)
