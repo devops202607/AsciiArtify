@@ -123,8 +123,8 @@ Files are in the repo under `demo/` (Dockerfile, index.html, deployment.yaml, in
 
 ## Verdict
 
-I recommend to use k3d for the PoC and daily dev loop.
+I recommend using k3d for PoC and daily development cycle.
 
-## Demostration
+## Demonstration
 
 ![demo](demo.gif)
