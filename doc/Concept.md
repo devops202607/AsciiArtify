@@ -54,10 +54,11 @@ Recommendation: standardize on Podman now and avoid the licensing question forev
 
 k3d is our pick for the PoC: fastest, lightest, has everything needed out of the box.
 
-Create a cluster (1 server + 1 agent):
+Create a cluster (1 server + 1 agent). Traefik ingress comes enabled by default, host port 8080 maps to the ingress:
 
 ```bash
-$ k3d cluster create k3d-demo --agents 1 --port "8081:80@loadbalancer" \
+$ k3d cluster create k3d-demo --api-port 127.0.0.1:6443 \
+    --agents 1 --port "8080:80@loadbalancer" \
     --image rancher/k3s:v1.31.1-k3s1
 INFO[0020] Cluster 'k3d-demo' created successfully!
 ```
@@ -67,51 +68,51 @@ Nodes are ready almost immediately:
 ```bash
 $ kubectl get nodes
 NAME                    STATUS   ROLES                  AGE    VERSION
-k3d-k3d-demo-agent-0    Ready    <none>                 32s    v1.31.1+k3s1
-k3d-k3d-demo-server-0   Ready    control-plane,master   36s    v1.31.1+k3s1
+k3d-k3d-demo-agent-0    Ready    <none>                 10s    v1.31.1+k3s1
+k3d-k3d-demo-server-0   Ready    control-plane,master   14s    v1.31.1+k3s1
 ```
 
 Build a hello image and load it into the cluster:
 
 ```bash
-$ docker build -t asciiartify/hello:v1 .
+$ docker build --load -t asciiartify/hello:v1 .
 $ k3d image import asciiartify/hello:v1 -c k3d-demo
-INFO[0009] Successfully imported 1 image(s) into 1 cluster(s)
+INFO[0007] Successfully imported 1 image(s) into 1 cluster(s)
 ```
 
-Deploy it (2 replicas + a LoadBalancer service):
+Deploy the app and expose it via Traefik (ClusterIP service + Ingress):
 
 ```bash
-$ kubectl apply -f deployment.yaml
+$ kubectl apply -f demo/deployment.yaml
 deployment.apps/hello created
 service/hello created
+
+$ kubectl apply -f demo/ingress.yaml
+ingress.networking.k8s.io/hello created
 
 $ kubectl rollout status deployment/hello
 deployment "hello" successfully rolled out
 
-$ kubectl get svc hello
-NAME    TYPE           CLUSTER-IP     EXTERNAL-IP             PORT(S)
-hello   LoadBalancer   10.43.226.16   172.19.0.2,172.19.0.3   80:32576/TCP
+$ kubectl get ingress
+NAME    CLASS     HOSTS                               ADDRESS                 PORTS
+hello   traefik   hello.195.201.121.117.nip.io        172.19.0.2,172.19.0.3   80
 ```
 
-Check it responds through the load balancer:
+Check it responds through Traefik on the public IP:
 
 ```bash
-$ curl http://localhost:8081
+$ curl http://hello.195.201.121.117.nip.io:8080
 <h1>Hello from AsciiArtify</h1>
 ```
 
-Same demo on Podman:
+Cluster management with k9s (terminal UI):
 
 ```bash
-$ export DOCKER_HOST=unix:///run/podman/podman.sock
-$ k3d cluster create k3d-podman --no-lb
-INFO[0009] Cluster 'k3d-podman' created successfully!
-$ docker save asciiartify/hello:v1 rancher/mirrored-pause:3.6 | k3d image import -c k3d-podman -
-$ kubectl apply -f deployment.yaml
-$ curl http://localhost:31026
-<h1>Hello from AsciiArtify</h1>
+$ k9s
+# navigate pods / deployments / logs, all in the terminal
 ```
+
+Files are in the repo under `demo/` (Dockerfile, index.html, deployment.yaml, ingress.yaml).
 
 ## Verdict
 
