@@ -44,3 +44,5 @@ UI: https://argocd.195.201.121.117.nip.io (accept the self-signed cert)
 ## Demostration
 
 ![ArgoCD demo](argocd.gif)
+
+![CD demo](demo-cd.gif)
