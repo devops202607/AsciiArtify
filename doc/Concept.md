@@ -4,9 +4,16 @@ We picked a tool to run Kubernetes locally for the AsciiArtify PoC. Tried three:
 
 ## What these tools are
 
-- minikube - a real single-node cluster, runs in a VM or in a container. Has lots of addons (dashboard, ingress, metrics). Good for learning.
-- kind - Kubernetes IN Docker. Nodes are just Docker containers, built on kubeadm. Made for CI, very fast.
-- k3d - wraps k3s (Rancher's slim Kubernetes) into containers. Lightest, fastest to start, ships with ingress, a load balancer, storage and even a built-in local registry (`k3d registry create`).
+### minikube 
+
+A real single-node cluster, runs in a VM or in a container. Has lots of addons (dashboard, ingress, metrics). Good for learning.
+
+### kind 
+
+Kubernetes IN Docker. Nodes are just Docker containers, built on kubeadm. Made for CI, very fast.
+
+### k3d 
+wraps k3s (Rancher's slim Kubernetes) into containers. Lightest, fastest to start, ships with ingress, a load balancer, storage and even a built-in local registry (`k3d registry create`).
 
 ## Main differences
 
@@ -29,16 +36,23 @@ Measured on a Debian 13 box (2 vCPU, 3.7 GB RAM) from command start until nodes 
 ## Pros and cons
 
 ### minikube
+
 Pros: easiest for a beginner, best docs, tons of addons, several drivers.
+
 Cons: slow, eats RAM, multi-node is half-broken, needs --force to run as root.
 
 ### kind
+
 Pros: fast, good for CI, true multi-node, no VM layer.
+
 Cons: no load balancer or ingress out of the box, you wire everything yourself, needs Docker.
 
 ### k3d
+
 Pros: fastest start, light, multi-node, ingress + LB + storage + local registry included, works with Docker and Podman, ports easy to expose.
+
 Cons: k3s is not 100% upstream Kubernetes (doesn't matter for a PoC), docs are thinner than minikube's.
+
 
 ## Docker licensing and Podman
 
@@ -109,13 +123,7 @@ Files are in the repo under `demo/` (Dockerfile, index.html, deployment.yaml, in
 
 ## Verdict
 
-Use **k3d** for the PoC and daily dev loop.
-
-Use **Podman** as the container runtime so there is no Docker licensing risk.
-
-Keep **kind** in GitHub Actions for CI - it is the standard there.
-
-Keep **minikube** around only for learning and for cases where you need a real upstream single-node cluster.
+I recommend to use k3d for the PoC and daily dev loop.
 
 ## Demostration
 
