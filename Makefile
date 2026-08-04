@@ -7,7 +7,7 @@ PLATFORM=linux/amd64
 
 BUILDER = docker
 
-TAG=devops202607/AsciiArtify
+TAG=ghcr.io/devops202607/ascii-artify
 
 BUILD=$$(git rev-parse HEAD|cut -c1-7)
 

@@ -3,7 +3,7 @@ app:
   version: v4
   port: 80
 image:
-  name: devops202607/AsciiArtify
+  name: ghcr.io/devops202607/ascii-artify
   tag: build-599e1af
 front:
   version: 3.0.1
