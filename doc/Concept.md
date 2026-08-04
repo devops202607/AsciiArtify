@@ -6,16 +6,25 @@ We picked a tool to run Kubernetes locally for the AsciiArtify PoC. Tried three:
 
 - **minikube** - a real single-node cluster, runs in a VM or in a container. Has lots of addons (dashboard, ingress, metrics). Good for learning.
 - **kind** - Kubernetes IN Docker. Nodes are just Docker containers, built on kubeadm. Made for CI, very fast.
-- **k3d** - wraps k3s (Rancher's slim Kubernetes) into containers. Lightest, fastest to start, ships with ingress and a load balancer built in.
+- **k3d** - wraps k3s (Rancher's slim Kubernetes) into containers. Lightest, fastest to start, ships with ingress, a load balancer, storage and even a built-in local registry (`k3d registry create`).
 
 ## Main differences
 
-- OS: all three work on Linux, macOS, Windows. minikube also supports arm64 the widest, kind and k3d do too.
-- Runtime: kind and k3d need a container runtime (Docker or Podman). minikube can also use VMs or bare metal.
-- Multi-node: minikube - experimental. kind - yes, via config. k3d - yes, one flag.
-- Extra stuff: k3d has ServiceLB, Traefik ingress and local-path storage by default. kind has nothing built in. minikube has addons you enable yourself.
-- Start time on our box: minikube ~1m22s, kind ~46s, k3d ~32s.
-- Resource usage: minikube is heavy (it's a VM). kind is medium. k3d is light.
+|                        | minikube          | kind              | k3d                       |
+|------------------------|-------------------|-------------------|---------------------------|
+| OS                     | Linux, macOS, Win | Linux, macOS, Win | Linux, macOS, Win         |
+| Arch                   | amd64, arm64      | amd64, arm64      | amd64, arm64              |
+| Container runtime      | Docker, Podman, VM, bare | Docker (Podman via socket) | Docker or Podman  |
+| Multi-node             | experimental      | yes (config file) | yes (one flag)            |
+| Built-in registry      | addon             | via config only   | yes, `k3d registry create`|
+| Ingress / LoadBalancer | addons            | nothing           | Traefik + ServiceLB       |
+| Storage                | addon             | nothing           | local-path built in       |
+| Start time (our box)   | ~1m22s            | ~46s              | ~32s                      |
+| K8s version tested     | v1.35.1           | v1.32.2           | v1.31.1+k3s1              |
+| Footprint              | heavy (VM)        | medium            | light                     |
+| CI-friendly            | good              | excellent         | excellent                 |
+
+Measured on a Debian 13 box (2 vCPU, 3.7 GB RAM) from command start until nodes are Ready.
 
 ## Pros and cons
 
@@ -28,7 +37,7 @@ Pros: fast, good for CI, true multi-node, no VM layer.
 Cons: no load balancer or ingress out of the box, you wire everything yourself, needs Docker.
 
 **k3d**
-Pros: fastest start, light, multi-node, ingress + LB + storage included, works with Docker and Podman, ports easy to expose.
+Pros: fastest start, light, multi-node, ingress + LB + storage + local registry included, works with Docker and Podman, ports easy to expose.
 Cons: k3s is not 100% upstream Kubernetes (doesn't matter for a PoC), docs are thinner than minikube's.
 
 ## Docker licensing and Podman
