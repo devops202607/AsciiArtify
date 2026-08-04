@@ -50,6 +50,9 @@ nats:
     port: 4222
 ns:
   enable: false
+ingress:
+  enabled: true
+  host: demopoc.195.201.121.117.nip.io
 api-gateway:
   image:
     tag: 0.51.2
