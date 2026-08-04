@@ -40,3 +40,7 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 ```
 
 UI: https://argocd.195.201.121.117.nip.io (accept the self-signed cert)
+
+## Demostration
+
+![ArgoCD demo](argocd.gif)
