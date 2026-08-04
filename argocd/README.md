@@ -21,10 +21,4 @@ Route via Traefik ingress:
 kubectl apply -f ingress.yaml
 ```
 
-Get the admin password:
-
-```bash
-kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
-```
-
-UI: http://argocd.195.201.121.117.nip.io (login: admin)
+UI: http://argocd.195.201.121.117.nip.io
