@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: db
-        image: mysql  # or just image: percona
+        image: mysql:8.0
         env:
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
           value: "true"
