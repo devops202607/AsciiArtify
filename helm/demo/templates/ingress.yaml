@@ -8,6 +8,10 @@ metadata:
     ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: demo-tls
   rules:
     - host: {{ .Values.ingress.host }}
       http:
