@@ -54,11 +54,11 @@ Recommendation: standardize on Podman now and avoid the licensing question forev
 
 k3d is our pick for the PoC: fastest, lightest, has everything needed out of the box.
 
-Create a cluster (1 server + 1 agent). Traefik ingress comes enabled by default, host port 8080 maps to the ingress:
+Create a cluster (1 server + 1 agent). Traefik ingress comes enabled by default, host port 80 maps to the ingress:
 
 ```bash
 $ k3d cluster create k3d-demo --api-port 127.0.0.1:6443 \
-    --agents 1 --port "8080:80@loadbalancer" \
+    --agents 1 --port "80:80@loadbalancer" \
     --image rancher/k3s:v1.31.1-k3s1
 INFO[0020] Cluster 'k3d-demo' created successfully!
 ```
@@ -98,10 +98,10 @@ NAME    CLASS     HOSTS                               ADDRESS                 PO
 hello   traefik   hello.195.201.121.117.nip.io        172.19.0.2,172.19.0.3   80
 ```
 
-Check it responds through Traefik on the public IP:
+Check it responds through Traefik on the public IP, port 80:
 
 ```bash
-$ curl http://hello.195.201.121.117.nip.io:8080
+$ curl http://hello.195.201.121.117.nip.io
 <h1>Hello from AsciiArtify</h1>
 ```
 
